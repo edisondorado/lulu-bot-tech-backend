@@ -1,7 +1,7 @@
 # lulu-bot-tech-backend
 
 # Requirements
-axios: "^1.3.6",
+axios: "^1.3.6",\n
 cookie-parser: "^1.4.6",
 cors: "^2.8.5",
 dotenv: "^16.0.3",
