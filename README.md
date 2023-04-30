@@ -1,5 +1,7 @@
 # lulu-bot-tech-backend
 
+![alt text](https://github.com/edisondorado/lulu-bot-tech-backend/texz.png)
+
 # Requirements
 axios: "^1.3.6"<br>
 cookie-parser: "^1.4.6"<br>
