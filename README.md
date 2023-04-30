@@ -1,6 +1,6 @@
 # lulu-bot-tech-backend
 
-![alt text](https://github.com/edisondorado/lulu-bot-tech-backend/texz.png)
+![alt text](https://github.com/edisondorado/lulu-bot-tech-backend/blob/main/texz.png?raw=true)
 
 # Requirements
 axios: "^1.3.6"<br>
