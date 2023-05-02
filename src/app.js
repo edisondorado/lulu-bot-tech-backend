@@ -23,7 +23,7 @@ const { AdminSchema, LeaderSchema } = require("./models/DiscordUser");
 
 app.use(
   session({
-    secret: "iasuhbdaaOSFIUBHohasbd872390rfasd",
+    secret: "fghddfghgfhdghfdhgfd",
     cookie: {
       maxAge: 60000 * 60 * 24,
     },
