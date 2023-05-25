@@ -25,7 +25,8 @@ const AdminSchema = mongoose.model("admins", new mongoose.Schema({
   avatar: String,
   active: Boolean,
   history: Array,
-  theme: String
+  theme: String,
+  online: Array,
 }));
 
 const LeaderSchema = mongoose.model("leaders", new mongoose.Schema({
@@ -45,7 +46,16 @@ const LeaderSchema = mongoose.model("leaders", new mongoose.Schema({
   history: Array,
   active: Boolean,
   theme: String,
-  discord: String
+  discord: String,
+  online: Array,
 }));
 
-module.exports = {LeaderSchema, AdminSchema}
+const BlacklistSchema = mongoose.model("blacklist", new mongoose.Schema({
+  nick: String,
+  forum: String,
+  vk: String,
+  ip: String,
+  email: String,
+}));
+
+module.exports = {LeaderSchema, AdminSchema, BlacklistSchema}

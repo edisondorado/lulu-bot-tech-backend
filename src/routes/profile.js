@@ -1,5 +1,6 @@
 const { AdminSchema, LeaderSchema } = require("../models/DiscordUser");
 
+const moment = require('moment');
 const router = require("express").Router();
 
 function isAuthorized(req, res, next) {
@@ -9,25 +10,28 @@ function isAuthorized(req, res, next) {
     next();
   } else {
     console.log("User is not logged in #3");
-    res.redirect(`http://localhost:3000/`);
+    res.redirect(`https://lulu-bot.tech`);
   }
 }
 
-router.get('/', isAuthorized, async (req, res) => {
-  try{
-    if(req.user.lvl > 2 && req.user.active || req.user.fraction && req.user.active){
-      console.log("LOADED")
+router.get("/", isAuthorized, async (req, res) => {
+  try {
+    if (
+      (req.user.lvl > 2 && req.user.active) ||
+      (req.user.fraction && req.user.active)
+    ) {
+      console.log("LOADED");
       res.json(req.user);
     } else {
       res.status(423).json({
-        messsage: "Access Denied"
-      })
+        messsage: "Access Denied",
+      });
     }
-  } catch(e) {
-    console.log(e)
+  } catch (e) {
+    console.log(e);
     res.status(500).json({
-      message: "Error occurred while checking profile"
-    })
+      message: "Error occurred while checking profile",
+    });
   }
 });
 
@@ -74,58 +78,55 @@ router.get("/leader/:id", isAuthorized, async (req, res) => {
         dateSet: userId.dataSet,
         active: userId.active,
         theme: userId.theme,
-        discord: userId.discord
+        discord: userId.discord,
+        online: userId.online,
       });
     } else if (req.user.id !== profileId) {
-      if (req.user.accessAdm === true) {
-        const userId = await LeaderSchema.findOne({ id: req.params.id }).exec();
-        console.log(userId);
-        if (userId) {
-          const startDateString = userId.from_inactive;
-          const endDateString = userId.to_inactive;
-          inactive = false;
-          if (startDateString && endDateString) {
-            const startDate = new Date(startDateString);
-            const tempdate = new Date(endDateString);
+      const userId = await LeaderSchema.findOne({ id: req.params.id }).exec();
+      console.log(userId);
+      if (userId) {
+        const startDateString = userId.from_inactive;
+        const endDateString = userId.to_inactive;
+        inactive = false;
+        if (startDateString && endDateString) {
+          const startDate = new Date(startDateString);
+          const tempdate = new Date(endDateString);
 
-            const fix = 1 * 24 * 60 * 60 * 1000;
-            const endDate = new Date(tempdate.getTime() + fix);
-            const currentDate = new Date();
+          const fix = 1 * 24 * 60 * 60 * 1000;
+          const endDate = new Date(tempdate.getTime() + fix);
+          const currentDate = new Date();
 
-            if (currentDate >= startDate && currentDate <= endDate) {
-              inactive = true;
-            } else {
-              inactive = false;
-            }
+          if (currentDate >= startDate && currentDate <= endDate) {
+            inactive = true;
+          } else {
+            inactive = false;
           }
-          req.user.lvl > 2 ? access = true : access = false
-          res.json({
-            idprofile: userId.id,
-            selfid: req.user.id,
-            nick: userId.nick,
-            avatar: userId.avatar,
-            rank: userId.rank,
-            fraction: userId.fraction,
-            ustwarn: userId.ustwarn,
-            strwarn: userId.strwarn,
-            city: userId.city,
-            age: userId.age,
-            forum: userId.forum,
-            vk: userId.vk,
-            reason: userId.reason,
-            dateSet: userId.dataSet,
-            active: userId.active,
-            accessFrom: access,
-            theme: req.user.theme,
-            discord: userId.discord
-          });
-        } else res.json({ message: "User not found", user: req.user.id });
-      } else {
-        console.log("user not found")
-        res.json({ message: "User not found", user: req.user.id });
-      }
+        }
+        req.user.lvl > 2 ? (access = true) : (access = false);
+        res.json({
+          idprofile: userId.id,
+          selfid: req.user.id,
+          nick: userId.nick,
+          avatar: userId.avatar,
+          rank: userId.rank,
+          fraction: userId.fraction,
+          ustwarn: userId.ustwarn,
+          strwarn: userId.strwarn,
+          city: userId.city,
+          age: userId.age,
+          forum: userId.forum,
+          vk: userId.vk,
+          reason: userId.reason,
+          dateSet: userId.dataSet,
+          active: userId.active,
+          accessFrom: access,
+          theme: req.user.theme,
+          discord: userId.discord,
+          online: userId.online,
+        });
+      } else res.json({ message: "User not found", user: req.user.id });
     } else {
-      console.log("th this error")
+      console.log("th this error");
     }
   } catch (e) {
     console.log(e);
@@ -133,7 +134,7 @@ router.get("/leader/:id", isAuthorized, async (req, res) => {
       message: "Error occurred while loading profile",
     });
   }
-  // res.redirect(`http://localhost:3000/profile/${req.user.id}`);
+  // res.redirect(`https://lulu-bot.techprofile/${req.user.id}`);
 });
 
 router.get("/admin/:id", isAuthorized, async (req, res) => {
@@ -161,6 +162,9 @@ router.get("/admin/:id", isAuthorized, async (req, res) => {
           console.log("NOT INACTIVE");
         }
       }
+      const now = moment();
+      const date = moment(userId.dateUp);
+      const days = now.diff(date, 'days');
       console.log(req.user.theme);
       res.json({
         id: userId.id,
@@ -187,10 +191,12 @@ router.get("/admin/:id", isAuthorized, async (req, res) => {
         vk: userId.vk,
         blat: userId.blat,
         accessFrom: userId.accessAdm,
-        theme: userId.theme
+        theme: userId.theme,
+        daysUp: days,
+        online: userId.online,
       });
     } else if (req.user.id !== profileId) {
-      if (req.user.accessAdm === true) {
+      if (req.user.accessAdm === true || req.user.typeAdmin === "ГС Гос.Структур" || req.user.typeAdmin === "ЗГС Гос.Структур") {
         const userId = await AdminSchema.findOne({ id: req.params.id }).exec();
 
         if (userId) {
@@ -211,6 +217,10 @@ router.get("/admin/:id", isAuthorized, async (req, res) => {
               inactive = false;
             }
           }
+          const now = moment();
+          const date = moment(userId.dateUp);
+          const days = now.diff(date, 'days');
+          console.log(days);
           res.json({
             id: userId.id,
             selfid: req.user.id,
@@ -236,8 +246,10 @@ router.get("/admin/:id", isAuthorized, async (req, res) => {
             vk: userId.vk,
             blat: userId.blat,
             accessAdm: userId.accessAdm,
-            accessFrom: req.user.accessAdm,
-            theme: req.user.theme
+            accessFrom: req.user.accessAdm === true ? true : req.user.typeAdmin === "ГС Гос.Структур" ? true : req.user.typeAdmin === "ЗГС Гос.Структур" ? true : false,
+            theme: req.user.theme,
+            daysUp: days,
+            online: userId.online,
           });
         } else res.json({ message: "User not found", user: req.user.id });
       } else {
@@ -251,7 +263,7 @@ router.get("/admin/:id", isAuthorized, async (req, res) => {
       message: "Error occurred while loading profile",
     });
   }
-  // res.redirect(`http://localhost:3000/profile/${req.user.id}`);
+  // res.redirect(`https://lulu-bot.techprofile/${req.user.id}`);
 });
 
 router.get("/admin/", isAuthorized, async (req, res) => {
@@ -263,7 +275,7 @@ router.get("/admin/", isAuthorized, async (req, res) => {
       message: "Error occurred while loading profile",
     });
   }
-  // res.redirect(`http://localhost:3000/profile/${req.user.id}`);
+  // res.redirect(`https://lulu-bot.techprofile/${req.user.id}`);
 });
 
 router.get("/leader/", isAuthorized, async (req, res) => {
@@ -275,7 +287,7 @@ router.get("/leader/", isAuthorized, async (req, res) => {
       message: "Error occurred while loading profile",
     });
   }
-  // res.redirect(`http://localhost:3000/profile/${req.user.id}`);
+  // res.redirect(`https://lulu-bot.techprofile/${req.user.id}`);
 });
 
 router.get("/leader/history/:id", isAuthorized, async (req, res) => {

@@ -8,10 +8,10 @@ router.get("/logout", (req, res) => {
       if (err) {
         console.error(err);
       }
-      res.redirect("http://localhost:3000/");
+      res.redirect("https://lulu-bot.tech/");
     });
   } else {
-    res.redirect("http://localhost:3000/");
+    res.redirect("https://lulu-bot.tech/");
   }
 });
 
@@ -22,11 +22,11 @@ router.get(
   }),
   (req, res) => {
     if (req.user.lvl && req.user.active === true) {
-      res.redirect(`http://localhost:3000/profile/admin/${req.user.id}`);
+      res.redirect(`https://lulu-bot.tech/profile/admin/${req.user.id}`);
     } else if (req.user.fraction && req.user.active == true) {
-      res.redirect(`http://localhost:3000/profile/leader/${req.user.id}`);
+      res.redirect(`https://lulu-bot.tech/profile/leader/${req.user.id}`);
     } else {
-      res.redirect("http://localhost:3000/forbidden/");
+      res.redirect("https://lulu-bot.tech/forbidden/");
     }
   }
 );

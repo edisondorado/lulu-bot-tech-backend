@@ -1,5 +1,6 @@
 const DiscordStrategy = require("passport-discord").Strategy;
 const passport = require("passport");
+const moment = require('moment');
 const { LeaderSchema, AdminSchema } = require("../models/DiscordUser");
 
 passport.serializeUser((user, done) => {
@@ -68,6 +69,17 @@ passport.use(
                   : user.lvl === 8
                   ? "#ff0000"
                   : "#404040";
+              if(user.from_inactive && user.to_inactive){
+                const now = moment();
+                const startDate = moment(user.from_inactive);
+                const endDate = moment(user.to_inactive);
+
+                const isInRange = now.isBetween(startDate, endDate, null, "[]");
+                if(!isInRange){
+                  user.from_inactive = "";
+                  user.to_inactive = "";
+                }
+              }
               return user.save();
             })
             .then(() => {
