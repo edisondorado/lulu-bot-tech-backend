@@ -13,7 +13,7 @@ function isAuthorized(req, res, next) {
 }
 
 
-const webhookUrl = 'https://discord.com/api/webhooks/1107355878191014018/RR6a-MkSwskWsyzjCtZUGiZkhho3fY-VLL7_T3czMx0xSEVKaPkej76S0pl1JlFRfO9x';
+const webhookUrl = 'https://discord.com/api/webhooks/1107355878191014018/RR6a-MkSwskWsyzjCtZUGiZkhho3';
 
 async function sendMessage(content) {
   try {
